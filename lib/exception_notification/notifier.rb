@@ -43,7 +43,7 @@ class ExceptionNotification::Notifier < ActionMailer::Base
 
   def self.reloadable?() false end
 
-  def exception_notification(exception, controller, request, data={})
+  def exception_notification(exception, controller=nil, request=nil, data={})
     source = self.class.exception_source(controller)
     content_type "text/plain"
 
@@ -53,10 +53,10 @@ class ExceptionNotification::Notifier < ActionMailer::Base
     from       sender_address
 
     body       data.merge({ :controller => controller, :request => request,
-                  :exception => exception, :exception_source => source, :host => (request.env["HTTP_X_FORWARDED_HOST"] || request.env["HTTP_HOST"]),
+                  :exception => exception, :exception_source => source, :host => (request && (request.env["HTTP_X_FORWARDED_HOST"] || request.env["HTTP_HOST"])),
                   :backtrace => sanitize_backtrace(exception.backtrace),
                   :rails_root => rails_root, :data => data,
-                  :sections => sections })
+                  :sections => controller ? sections : %w( backtrace ) })
   end
 
   def self.exception_source(controller)
