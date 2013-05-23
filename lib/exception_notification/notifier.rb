@@ -56,7 +56,7 @@ class ExceptionNotification::Notifier < ActionMailer::Base
                   :exception => exception, :exception_source => source, :host => (request && (request.env["HTTP_X_FORWARDED_HOST"] || request.env["HTTP_HOST"])),
                   :backtrace => sanitize_backtrace(exception.backtrace),
                   :rails_root => rails_root, :data => data,
-                  :sections => controller ? sections : %w( backtrace ) })
+                  :sections => controller ? sections : %w( data backtrace ) })
   end
 
   def self.exception_source(controller)
